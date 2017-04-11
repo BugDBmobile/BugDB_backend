@@ -20,4 +20,6 @@ public interface IBugService {
 
     Iterable<EsBug> deleteAll();
 
+    EsBug update(EsBug esBug);
+
 }

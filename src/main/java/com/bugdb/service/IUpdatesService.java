@@ -13,4 +13,6 @@ public interface IUpdatesService {
     Iterable<EsUpdates> search(String str);
 
     Iterable<EsUpdates> findAll();
+
+    void deleteAll();
 }

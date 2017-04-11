@@ -20,7 +20,7 @@ import com.bugdb.domain.Updates;
 import com.bugdb.service.IBugService;
 import com.bugdb.service.IUpdatesService;
 import com.bugdb.service.UpdatesService;
-import com.bugdb.vo.EsBugVO;
+import com.bugdb.model.EsBugVO;
 import com.google.gson.Gson;
 
 @Controller
@@ -39,7 +39,7 @@ public class ElasticBugContorller {
 
     @RequestMapping(value = "synchronizeDB", method = RequestMethod.GET)
     public String bug() {
-
+        deleteAll();
         Iterable<Bug> bugList = iBugService.findAll();
         int countBug = 0;
         int countUpdates = 0;
@@ -100,6 +100,7 @@ public class ElasticBugContorller {
     public List deleteAll() {
         Iterable<EsBug> bugList = iBugService.deleteAll();
         List<EsBug> esbugs = IteratorUtils.toList(bugList);
+        iUpdatesService.deleteAll();
         return esbugs;
     }
 }

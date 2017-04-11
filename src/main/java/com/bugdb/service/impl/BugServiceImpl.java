@@ -59,5 +59,12 @@ public class BugServiceImpl implements IBugService {
         return esBugRepository.findAll();
     }
 
+    @Override
+    public EsBug update(EsBug esBug) {
+        esBugRepository.delete(esBug.getBugNo());
+        esBugRepository.save(esBug);
+        return null;
+    }
+
 
 }

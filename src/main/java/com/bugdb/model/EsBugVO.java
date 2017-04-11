@@ -1,4 +1,4 @@
-package com.bugdb.vo;
+package com.bugdb.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;

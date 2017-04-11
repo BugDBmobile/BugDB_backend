@@ -6,6 +6,9 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.bugdb.domain.EsBug;
+import com.bugdb.domain.EsUpdates;
+import com.bugdb.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,10 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bugdb.domain.Bug;
 import com.bugdb.domain.Updates;
-import com.bugdb.service.BugServiceDB;
-import com.bugdb.service.UpdatesService;
-import com.bugdb.service.UserService;
-import com.bugdb.service.UtilService;
 import com.google.gson.Gson;
 @Controller
 @RequestMapping("/")
@@ -29,6 +28,10 @@ public class BugController {
 	private BugServiceDB bugservice;
 	@Autowired
 	private UpdatesService updateservice;
+	@Autowired
+	private IUpdatesService iUpdatesService;
+	@Autowired
+	private IBugService iBugService;
 	@Autowired
 	private UtilService utilservice;
 	@Autowired
@@ -86,7 +89,7 @@ public class BugController {
 		update.setTime(Timestamp.valueOf(LocalDateTime.now()));
 		
 		StringBuilder chg=new StringBuilder("");
-		if(bug.getStatusId()!=status){chg.append("CHG:status-").append(utilservice.findStatusById(bug.getBugNo()).getDescription())
+		if(bug.getStatusId()!=status){chg.append("CHG:status-").append(utilservice.findStatusById(bug.getStatusId()).getDescription())
 			.append(" to ").append(utilservice.findStatusById(status).getDescription()+";");}	
 		if(bug.getAssigned()!=assigned){chg.append("CHG:assigned-").append(userservice.findById(bug.getAssigned()).getUserName())
 			.append(" to ").append(userservice.findById(assigned).getUserName()+";");}
@@ -98,6 +101,14 @@ public class BugController {
 		update.setChg(chg.toString());
 		Updates result2=updateservice.save(update);
 		int result=bugservice.updateBug(status, assigned, product, subject, bugNo);
+
+
+		EsUpdates esUpdates =  iUpdatesService.save(new EsUpdates(update));
+		bug.setStatusId(status);
+		bug.setAssigned(assigned);
+		bug.setProductId(product);
+		bug.setSubject(subject);
+		EsBug esBug = iBugService.update(new EsBug(bug));
 		
 		Gson gson=new Gson();
 		

@@ -41,5 +41,13 @@ public class UpdatesServiceImpl implements IUpdatesService {
     @Override
     public Iterable<EsUpdates> findAll() {
         return esUpdatesRepository.findAll();
+
     }
+
+    @Override
+    public void deleteAll() {
+        esUpdatesRepository.deleteAll();
+    }
+
+
 }

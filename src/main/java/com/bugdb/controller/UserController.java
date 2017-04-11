@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bugdb.domain.User;
 import com.bugdb.service.UserService;
-import com.bugdb.vo.ErroInfo;
 import com.google.gson.Gson;
 @Controller
 @RequestMapping("/")
@@ -32,9 +31,7 @@ public class UserController {
 			return gson.toJson(user);
 		}
 		else{
-			ErroInfo ei = new ErroInfo();
-			ei.setErrCont("User name or password is wrong");
-			return gson.toJson(ei);
+			return null;
 		}
 	}
 
