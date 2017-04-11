@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import com.bugdb.domain.Os;
 
 
-public interface OsRepository extends JpaRepository<Os, Long>, JpaSpecificationExecutor<Os> {
+public interface OsRepository extends JpaRepository<Os, Integer>, JpaSpecificationExecutor<Os> {
 }

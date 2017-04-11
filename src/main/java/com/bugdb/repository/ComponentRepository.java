@@ -6,5 +6,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import com.bugdb.domain.Component;
 
 
-public interface ComponentRepository extends JpaRepository<Component, Long>, JpaSpecificationExecutor<Component> {
+public interface ComponentRepository extends JpaRepository<Component, Integer>, JpaSpecificationExecutor<Component> {
+
+    public Component findById(Integer id);
 }

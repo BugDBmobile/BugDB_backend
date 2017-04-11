@@ -31,39 +31,42 @@ public class UtilService {
 	private SeverityRepository sr;
 	@Autowired
 	private StatusRepository str;
-	
-	@Transactional
+
 	public List<Component> findAllComponent(){
 		return cr.findAll();
 	}
-	
-	@Transactional
+
 	public List<Os> findAllOs(){
 		return or.findAll();
 	}
 
-	@Transactional
 	public List<Product> findAllProduct(){
 		return pr.findAll();
 	}
-	
-	@Transactional
+
 	public Product findProductById(int id){
 		return pr.findById(id);
 	}
-	
-	@Transactional
+
 	public List<Severity> findAllSeverity(){
 		return sr.findAll();
 	}
-	
-	@Transactional
+
 	public List<Status> findAllStatus(){
 		return str.findAll();
 	}
-	
-	@Transactional 
+
 	public Status findStatusById(int id){
 		return str.findById(id);
+	}
+
+	public Component findComponentById(int id){
+		return cr.findById(id);
+	}
+	public Os fingOsById(int id){
+		return or.findOne(id);
+	}
+	public Severity findSeverityById(int id){
+		return sr.findOne(id);
 	}
 }

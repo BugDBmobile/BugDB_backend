@@ -53,5 +53,8 @@ public class UserService {
     public User login(@NotNull @Valid String username, @NotNull @Validated String password) {
         return ur.findByUserName(username);
     }
+	public User getUserById(Integer userId){
+		return ur.findById(userId);
+	}
 
 }

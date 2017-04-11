@@ -6,8 +6,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.bugdb.domain.EsBug;
-import com.bugdb.domain.EsUpdates;
+import com.bugdb.domain.*;
+import com.bugdb.model.BugVO;
 import com.bugdb.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bugdb.domain.Bug;
-import com.bugdb.domain.Updates;
 import com.google.gson.Gson;
 @Controller
 @RequestMapping("/")
@@ -40,9 +38,21 @@ public class BugController {
 	@RequestMapping(value ="findByBugNo",params = {"bugNo"}, method = RequestMethod.GET)
 	@Transactional(readOnly = true)
 	public @ResponseBody String findByBugNo(HttpServletRequest request,@RequestParam int bugNo){
-		Bug result=bugservice.findByBugNo(bugNo);
+		Bug bug=bugservice.findByBugNo(bugNo);
+		BugVO bugVO = new BugVO(bug);
+		bugVO.setAssignedName(userservice.findById(bug.getAssigned()).getUserName());
+		bugVO.setStatusIdName(utilservice.findStatusById(bug.getStatusId()).getDescription());
+		bugVO.setProductIdName(utilservice.findProductById(bug.getProductId()).getDescription());
+		bugVO.setFiledByName(userservice.findById(bug.getFiledBy()).getUserName());
+		Component component = utilservice.findComponentById(bug.getComponentId());
+		bugVO.setComponentIdName(component.getName());
+		bugVO.setComponentIdDes(component.getDescription());
+		bugVO.setFixedByName(userservice.findById(bug.getFixedBy()).getUserName());
+		bugVO.setOsIdName(utilservice.fingOsById(bug.getOsId()).getDescription());
+		bugVO.setSeverityIdName(utilservice.findSeverityById(bug.getSeverityId()).getDescription());
+
 		Gson gson=new Gson();
-		return gson.toJson(result);
+		return gson.toJson(bugVO);
 	}
 	
 
