@@ -9,6 +9,16 @@ public class Status implements Serializable {
 	@Id
 	private Integer id;
 	private String description;
+	private Integer isClose;
+
+	public Integer getIsClose() {
+		return isClose;
+	}
+
+	public void setIsClose(Integer isClose) {
+		this.isClose = isClose;
+	}
+
 	public Integer getId() {
 		return id;
 	}

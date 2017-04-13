@@ -56,5 +56,7 @@ public class UserService {
 	public User getUserById(Integer userId){
 		return ur.findById(userId);
 	}
-
+	public List<User> findByManager(Integer id){
+		return ur.findByManager(id);
+	}
 }

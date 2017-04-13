@@ -23,6 +23,7 @@ public class User {
 	@NotBlank
 	private String guid;
 	private String role;
+	private Integer manager;
 
 
     public String getGuid() {
@@ -33,7 +34,15 @@ public class User {
         this.guid = guid;
     }
 
-    public Integer getId() {
+	public Integer getManager() {
+		return manager;
+	}
+
+	public void setManager(Integer manager) {
+		this.manager = manager;
+	}
+
+	public Integer getId() {
 		return id;
 	}
 	public void setId(Integer id) {

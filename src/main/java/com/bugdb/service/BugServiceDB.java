@@ -1,5 +1,7 @@
 package com.bugdb.service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,12 +48,12 @@ public class BugServiceDB {
 		return br.findByFiledBy(filedBy);
 	}
 	
-	@Transactional
+
 	public List<Bug> findByCondition(Integer productId,Integer component,Integer status,Integer assigned,Integer severity,String tag,Integer filedBy,Timestamp starttime,Timestamp endtime){
         List<Bug> resultList = null;
-        Specification querySpecifi = new Specification<User>() {
+        Specification querySpecifi = new Specification<Bug>() {
             @Override
-            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+            public Predicate toPredicate(Root<Bug> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
         
                 List<Predicate> predicates = new ArrayList<>();
                 if(null != productId){
@@ -85,6 +87,28 @@ public class BugServiceDB {
         };
         resultList =  br.findAll(querySpecifi);
         return resultList;
+    }
+
+    public int countByStartTime(int userId, int isClose, Timestamp startTime){
+        List<Bug> resultList = null;
+        Specification querySpecifi = new Specification<Bug>() {
+            @Override
+            public Predicate toPredicate(Root<Bug> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predicates = new ArrayList<>();
+
+                predicates.add(criteriaBuilder.equal(root.get("userId"),userId));
+                predicates.add(criteriaBuilder.equal(root.get("isClose"),isClose));
+                if(null != startTime){
+                    predicates.add(criteriaBuilder.greaterThan(root.get("filed"), startTime));
+                }
+
+                predicates.add(criteriaBuilder.lessThan(root.get("filed"), Timestamp.valueOf(LocalDateTime.now())));
+
+                return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+            }
+        };
+        resultList =  br.findAll(querySpecifi);
+        return resultList.size();
     }
 
 }

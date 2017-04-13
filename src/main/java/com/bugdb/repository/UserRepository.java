@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.bugdb.domain.User;
 
+import java.util.List;
+
 
 public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecificationExecutor<User> {
 	@Query("select p from User p where userName = ?")
@@ -13,4 +15,6 @@ public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecifi
 	
 	@Query("select u from User u where id = ?")
 	public User findById(Integer id);
+
+	public List<User> findByManager(Integer id);
 }
