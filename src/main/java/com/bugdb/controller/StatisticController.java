@@ -36,10 +36,14 @@ public class StatisticController {
     public @ResponseBody
     String statistic(@RequestParam int userId,@RequestParam String startTime,@RequestParam String endTime,@RequestParam int isClose){
         Timestamp et;
-        if(endTime == null)
+        if(endTime == "" || endTime == null)
             et=Timestamp.valueOf(LocalDateTime.now());
-        else et =Timestamp.valueOf(endTime);
-        Timestamp st=Timestamp.valueOf(startTime);
+        else {
+            LocalDateTime stle=LocalDateTime.parse(endTime);
+            et =Timestamp.valueOf(stle);
+        }
+        LocalDateTime stl=LocalDateTime.parse(startTime);
+        Timestamp st=Timestamp.valueOf(stl);
         Gson gson=new Gson();
         Map<Integer,Integer> result = new HashMap<>();
         result = countBugByUser(result, userId,isClose,st,et);
