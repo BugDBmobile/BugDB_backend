@@ -10,6 +10,6 @@ import com.bugdb.domain.Updates;
 
 
 public interface UpdatesRepository extends JpaRepository<Updates, Long>, JpaSpecificationExecutor<Updates> {
-	@Query("select u from Updates u where bugId = ?")
+	@Query("select u from Updates u where bugId = ? order by u.time")
 	public List<Updates> findByBugId(int bugId);
 }

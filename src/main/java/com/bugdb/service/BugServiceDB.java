@@ -7,6 +7,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
+import java.sql.Timestamp;
+import java.time.*;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +47,7 @@ public class BugServiceDB {
 	}
 	
 	@Transactional
-	public List<Bug> findByCondition(Integer productId,Integer component,Integer status,Integer assigned,Integer severity,String tag,Integer filedBy){
+	public List<Bug> findByCondition(Integer productId,Integer component,Integer status,Integer assigned,Integer severity,String tag,Integer filedBy,Timestamp starttime,Timestamp endtime){
         List<Bug> resultList = null;
         Specification querySpecifi = new Specification<User>() {
             @Override
@@ -68,6 +71,14 @@ public class BugServiceDB {
                 }
                 if("" != tag){
                     predicates.add(criteriaBuilder.like(root.get("tags"), "%"+tag+"&"));
+                }
+                System.out.println(starttime);
+	            System.out.println(endtime);
+                if(null != starttime){
+                	predicates.add(criteriaBuilder.greaterThan(root.get("filed"), starttime));
+                }
+                if(null != endtime){
+                	predicates.add(criteriaBuilder.lessThan(root.get("filed"), endtime));
                 }
                 return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
             }

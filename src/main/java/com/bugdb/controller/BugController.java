@@ -1,7 +1,8 @@
 package com.bugdb.controller;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -72,12 +73,20 @@ public class BugController {
 		return gson.toJson(result);
 	}
 	
-	@RequestMapping(value ="advancedSearch",params = {"productId","component","status","assigned","severity","tag","filedBy"}, method = RequestMethod.GET)
+	@RequestMapping(value ="advancedSearch",params = {"productId","component","status","assigned","severity","tag","filedBy","startTime","endTime"}, method = RequestMethod.GET)
 	@Transactional(readOnly = true)
 	public @ResponseBody String advancedSearch(HttpServletRequest request,@RequestParam Integer productId,
 			@RequestParam Integer component,@RequestParam Integer status,@RequestParam Integer assigned,
-			@RequestParam Integer severity,@RequestParam String tag,@RequestParam Integer filedBy) {
-		List<Bug> result=bugservice.findByCondition(productId,component,status,assigned,severity,tag,filedBy);
+			@RequestParam Integer severity,@RequestParam String tag,@RequestParam Integer filedBy,@RequestParam String startTime,@RequestParam String endTime) {
+		System.out.println(startTime);
+		LocalDateTime stl=LocalDateTime.parse(startTime);
+		LocalDateTime etl=LocalDateTime.parse(endTime);
+		Timestamp st=Timestamp.valueOf(stl);
+		Timestamp et=Timestamp.valueOf(etl);
+		System.out.println(st);
+		System.out.println(et);
+  
+		List<Bug> result=bugservice.findByCondition(productId,component,status,assigned,severity,tag,filedBy,st,et);
 		Gson gson=new Gson();
 		return gson.toJson(result);
 	}
@@ -103,6 +112,9 @@ public class BugController {
 			.append(" to ").append(utilservice.findStatusById(status).getDescription()+";");}	
 		if(bug.getAssigned()!=assigned){chg.append("CHG:assigned-").append(userservice.findById(bug.getAssigned()).getUserName())
 			.append(" to ").append(userservice.findById(assigned).getUserName()+";");}
+		if(bug.getAssigned()!=assigned){
+			String recipient=userservice.findById(assigned).getEmail();
+		new mailtest().send(bugNo, recipient);}
 		if(bug.getProductId()!=product){chg.append("CHG:product-").append(utilservice.findProductById(bug.getProductId()).getDescription())
 			.append(" to ").append(utilservice.findProductById(product).getDescription()+";");}
 		if(!bug.getSubject().equals(subject)){chg.append("CHG:subject-").append(bug.getSubject())
