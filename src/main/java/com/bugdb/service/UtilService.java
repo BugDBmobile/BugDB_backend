@@ -69,4 +69,7 @@ public class UtilService {
 	public Severity findSeverityById(int id){
 		return sr.findOne(id);
 	}
+	public List<Status> findStatus(int isClose){
+		return str.findByIsClose(isClose);
+	}
 }

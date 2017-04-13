@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.time.*;
 import javax.transaction.Transactional;
 
+import com.bugdb.domain.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,8 @@ import com.bugdb.repository.BugRepository;
 public class BugServiceDB {
 	@Autowired
 	private BugRepository br;
+    @Autowired
+    private UtilService us;
 	
 	@Transactional
 	public Bug findByBugNo(Integer bugNo){
@@ -89,25 +92,33 @@ public class BugServiceDB {
         return resultList;
     }
 
-    public int countByStartTime(int userId, int isClose, Timestamp startTime){
-        List<Bug> resultList = null;
-        Specification querySpecifi = new Specification<Bug>() {
-            @Override
-            public Predicate toPredicate(Root<Bug> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                List<Predicate> predicates = new ArrayList<>();
+    public int countByStartTime(int userId, int isClose, Timestamp startTime, Timestamp endTime){
+        List<Bug> resultList = new ArrayList<>();
 
-                predicates.add(criteriaBuilder.equal(root.get("userId"),userId));
-                predicates.add(criteriaBuilder.equal(root.get("isClose"),isClose));
-                if(null != startTime){
-                    predicates.add(criteriaBuilder.greaterThan(root.get("filed"), startTime));
+        List<Status> sts = us.findStatus(isClose);
+        for (Status st : sts) {
+            Integer i = st.getId();
+
+            Specification querySpecifi = new Specification<Bug>() {
+                @Override
+                public Predicate toPredicate(Root<Bug> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                    List<Predicate> predicates = new ArrayList<>();
+
+                    predicates.add(criteriaBuilder.equal(root.get("filedBy"),userId));
+
+                    predicates.add(criteriaBuilder.equal(root.get("statusId"),i));
+                    System.out.println(startTime);
+                    if(null != startTime){
+                        predicates.add(criteriaBuilder.greaterThan(root.get("filed"), startTime));
+                    }
+
+                    predicates.add(criteriaBuilder.lessThan(root.get("filed"), endTime));
+
+                    return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
                 }
-
-                predicates.add(criteriaBuilder.lessThan(root.get("filed"), Timestamp.valueOf(LocalDateTime.now())));
-
-                return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-            }
-        };
-        resultList =  br.findAll(querySpecifi);
+            };
+            resultList.addAll(br.findAll(querySpecifi));
+        }
         return resultList.size();
     }
 
