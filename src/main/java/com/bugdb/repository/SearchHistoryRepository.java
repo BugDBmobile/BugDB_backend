@@ -13,5 +13,8 @@ import java.util.List;
  */
 
 public interface SearchHistoryRepository extends JpaRepository<SearchHistory, Integer>, JpaSpecificationExecutor<SearchHistory> {
-    public List<SearchHistory> findBySearchUserId(Integer id);
+    @Query("select b from SearchHistory b where b.searchUserId= ?")
+	public List<SearchHistory> findBySearchUserId(Integer id);
+    @Query("select b from SearchHistory b where b.id= ?")
+   	public SearchHistory findById(Integer id);
 }

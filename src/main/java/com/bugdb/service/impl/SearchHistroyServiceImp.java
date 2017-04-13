@@ -22,7 +22,7 @@ public class SearchHistroyServiceImp implements ISearchHistoryService {
 
     @Override
     public SearchHistory findById(Integer id) {
-        return shr.findOne(id);
+        return shr.findById(id);
     }
 
     @Override

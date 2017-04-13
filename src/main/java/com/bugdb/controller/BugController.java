@@ -133,7 +133,7 @@ public class BugController {
 //		SearchHistory result = iSearchHistoryService.save(searchHistory);
 //		return gson.toJson(result);
 //	}
-	@RequestMapping(value ="saveSearchHistory",params = {"id","searchName","productId","component","status","assigned","severity","tag","filedBy","startTime","endTime"}, method = RequestMethod.GET)
+	@RequestMapping(value ="saveSearchHistory",params = {"id","searchName","productId","component","status","assigned","severity","tag","filedBy","startTime","endTime","userId"}, method = RequestMethod.GET)
 	public @ResponseBody String saveHistory(@RequestParam Integer id,
 											@RequestParam String searchName,
 											@RequestParam Integer productId,
@@ -144,7 +144,8 @@ public class BugController {
 											@RequestParam String tag,
 											@RequestParam Integer filedBy,
                                             @RequestParam String startTime,
-                                            @RequestParam String endTime){
+                                            @RequestParam String endTime,
+                                            @RequestParam Integer userId){
 		Gson gson=new Gson();
 
 		if(id == null){
@@ -157,6 +158,7 @@ public class BugController {
 			searchHistory.setSeverityId(severity);
 			searchHistory.setTags(tag);
 			searchHistory.setFiledBy(filedBy);
+			searchHistory.setSearchUserId(userId);
 			searchHistory.setCreatTime(Timestamp.valueOf(LocalDateTime.now()));
             if(startTime != null){
                 searchHistory.setStartTime(Timestamp.valueOf(LocalDateTime.parse(startTime)));
