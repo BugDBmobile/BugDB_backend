@@ -52,8 +52,12 @@ public class StatisticController {
         Timestamp et;
         if(endTime == "" || endTime == null)
             et=Timestamp.valueOf(LocalDateTime.now());
-        else et =Timestamp.valueOf(endTime);
-        Timestamp st=Timestamp.valueOf(startTime);
+        else {
+            LocalDateTime stle=LocalDateTime.parse(endTime);
+            et =Timestamp.valueOf(stle);
+        }
+        LocalDateTime stl=LocalDateTime.parse(startTime);
+        Timestamp st=Timestamp.valueOf(stl);
         Gson gson=new Gson();
         Map<Timestamp,Map<Integer,Integer>> result = new HashMap<>();
 
